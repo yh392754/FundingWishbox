@@ -33,10 +33,10 @@ public class Board extends Time{
 
     @OneToMany(mappedBy = "board")
     @JsonIgnore
-    private List<BoardFile> boardFiles;
+    private List<File> files;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BoardFile> boardFileEntityList = new ArrayList<>();
+    private List<File> fileEntityList = new ArrayList<>();
 
 
     public static Board toSaveEntity(BoardDto boardDto, User writer) {
