@@ -1,6 +1,7 @@
 package com.example.fundingwishbox.entity;
 
 
+import com.example.fundingwishbox.dto.BoardDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

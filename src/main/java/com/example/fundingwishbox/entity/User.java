@@ -1,11 +1,13 @@
 package com.example.fundingwishbox.entity;
 
 
+import com.example.fundingwishbox.dto.JoinRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
