@@ -2,7 +2,7 @@ package com.example.fundingwishbox.dto;
 
 
 import com.example.fundingwishbox.entity.Board;
-import com.example.fundingwishbox.entity.File;
+import com.example.fundingwishbox.entity.BoardFile;
 import lombok.*;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,15 +44,15 @@ public class BoardDto {
                 .boardCreatedTime(board.getCreateTime())
                 .writerId(board.getUser().getNickname());
 
-        if (board.getFiles() != null && !board.getFiles().isEmpty()) {
+        if (board.getBoardFiles() != null && !board.getBoardFiles().isEmpty()) {
             // 파일이 첨부된 경우
             List<String> originalFileNameList = new ArrayList<>();
             List<String> storedFileNameList = new ArrayList<>();
 
 
-            for(File file : board.getFileEntityList()) {
-                originalFileNameList.add(file.getOriginalFileName());
-                storedFileNameList.add(file.getStoredFileName());
+            for(BoardFile boardFile : board.getBoardFileEntityList()) {
+                originalFileNameList.add(boardFile.getOriginalFileName());
+                storedFileNameList.add(boardFile.getStoredFileName());
 
             }
             builder.originalFileName(originalFileNameList);
