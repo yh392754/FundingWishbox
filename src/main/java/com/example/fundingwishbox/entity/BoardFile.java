@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "board_file_table")
 
-public class File extends Time{
+public class BoardFile extends Time{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,8 +27,8 @@ public class File extends Time{
     @JoinColumn(name ="board_id")
     private Board board;
 
-    public static File toBoardFileEntity(Board boardEntity, String originalFileName, String storedFileName) {
-        return  File.builder()
+    public static BoardFile toBoardFileEntity(Board boardEntity, String originalFileName, String storedFileName) {
+        return  BoardFile.builder()
                 .originalFileName(originalFileName)
                 .storedFileName(storedFileName)
                 .board(boardEntity)
