@@ -32,19 +32,13 @@ public class SecurityConfig {
                         .logoutUrl("/security-login/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                )
-                .oauth2Login(oauth2Login -> oauth2Login
-                        .loginPage("/security-login/login")
-                        .defaultSuccessUrl("/security-login")
-                        .userInfoEndpoint(userInfoEndpoint -> {
-                            // 사용자 정보 엔드포인트 설정
-                        })
-                )
+                );
+    /*
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new MyAuthenticationEntryPoint())
                         .accessDeniedHandler(new MyAccessDeniedHandler())
                 );
-
+*/
         return http.build();
     }
 }
