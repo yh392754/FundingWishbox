@@ -21,11 +21,6 @@ import java.io.IOException;
 
 public class BoardController {
 
-    @ModelAttribute
-    public void addAttributes(Model model) {
-        model.addAttribute("loginType", "security-login");
-        model.addAttribute("pageName", "Security 로그인");
-    }
 
     private final BoardService boardService;
 
