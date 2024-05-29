@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>1대1 채팅</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var socket = new SockJS('/chat-websocket');
+    var stompClient = Stomp.over(socket);
+
+    var loggedInUserId = /*[[${loggedInUserId}]]*/;
+    var chatTargetUserId = /*[[${chatTargetUserId}]]*/;
+    var chatroomId;
+
+    stompClient.connect({}, function(frame) {
+      chatroomId = [loggedInUserId, chatTargetUserId].sort().toString().replace(',', ':');
+
+      console.log("Chatroom ID: " + chatroomId);
+
+      stompClient.subscribe(`/topic/messages/${chatroomId}`, function(message) {
+        showMessage(JSON.parse(message.body));
+        scrollToBottom();
+      });
+    });
+
+    function sendMessage() {
+      var input = document.getElementById('input');
+      var user = document.getElementById("loggedInUser").textContent;
+      var message = {
+        'from': user,
+        'to': chatTargetUserId,
+        'text': input.value
+      };
+      stompClient.send(`/app/send/${chatroomId}`, {}, JSON.stringify(message));
+      input.value = '';
+
+    }
+
+    function showMessage(message) {
+      var messages = document.getElementById('messages');
+      var line = document.createElement('div');
+      line.innerText = message.from + ": " + message.text;
+      messages.appendChild(line);
+    }
+
+    function scrollToBottom() {
+      var messages = document.getElementById('messages');
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function handleEnterKeyPress(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        sendMessage();
+        event.target.value = '';
+      }
+    }
+    /*]]>*/
+  </script>
+  <style>
+    #messages {
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>1대1 채팅: [[${chatTarget.nickname}]]</h1>
+<h3 id="loggedInUser" hidden>[[${loggedInUser.nickname}]]</h3>
+<div id="messages"></div>
+<input id="input" type="text" onkeydown="handleEnterKeyPress(event)">
+<button onclick="sendMessage()">전송</button>
+
+</body>
+</html>
