@@ -44,3 +44,12 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+task copyPrivate(type: Copy) {
+    copy {
+        from './fundingwishbox-yml'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}
