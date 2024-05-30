@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board List</title>
+</head>
+<body>
+<h1><a th:href="|/${loginType}|">[[${pageName}]]</a></h1> <hr/>
+
+<h1>Board List</h1>
+
+<form action="/security-login/board/list/search" method="GET">
+    <div>
+        <input name="keyword" type="text" placeholder="제목 검색">     <button>검색하기</button>
+    </div>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Body</th>
+        <th>NickName</th>
+
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${dto}">
+        <td><a th:href="@{|/security-login/board/${board.id}?page=${dto.number + 1}|}" th:text="${board.title}"> </a></td>
+        <td th:text="${board.body}"></td>
+        <td th:text="${board.writerId}"></td>
+    </tr>
+    </tbody>
+
+
+</table>
+
+<!-- First -->
+<a th:href="@{/security-login/board/list/search(page=1, keyword=${param.keyword})}">First</a>
+<!-- Prev -->
+<a th:href="${dto.first} ? '#' : @{/security-login/board/list/search(page=${dto.number}, keyword=${param.keyword})}">prev</a>
+<!-- Page Numbers -->
+<span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+    <span th:if="${page == dto.number + 1}" th:text="${page}"></span>
+    <span th:unless="${page == dto.number + 1}">
+        <a th:href="@{/security-login/board/list/search(page=${page}, keyword=${param.keyword})}" th:text="${page}"></a>
+    </span>
+</span>
+<!-- Next -->
+<a th:href="${dto.last} ? '#' : @{/security-login/board/list/search(page=${dto.number + 2}, keyword=${param.keyword})}">next</a>
+<!-- Last -->
+<a th:href="@{/security-login/board/list/search(page=${dto.totalPages}, keyword=${param.keyword})}">Last</a>
+
+
+</body>
+</html>
