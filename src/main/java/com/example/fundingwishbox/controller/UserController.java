@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +33,6 @@ public class UserController {
 
     @GetMapping(value = {"", "/"})
     public String home(Model model, Authentication auth) throws IllegalAccessException {
-
         if (auth != null) {
             User loginUser;
             try {
@@ -47,13 +45,17 @@ public class UserController {
                 model.addAttribute("nickname", loginUser.getNickname());
             }
         }
-
         return "home";
+    }
+
+    @GetMapping("/join")
+    public String joinPage(Model model) {
+        model.addAttribute("joinRequest", new JoinRequest());
+        return "join"; // 여기가 join.html 파일로 이동하도록
     }
 
     @PostMapping("/join")
     public String join(@Valid @ModelAttribute JoinRequest joinRequest, BindingResult bindingResult, Model model) {
-
         // loginId 중복 체크
         if (userService.checkLoginIdDuplicate(joinRequest.getLoginId())) {
             bindingResult.addError(new FieldError("joinRequest", "loginId", "로그인 아이디가 중복됩니다."));
@@ -64,38 +66,34 @@ public class UserController {
         }
         // password와 passwordCheck가 같은지 체크
         if (!joinRequest.getPassword().equals(joinRequest.getPasswordCheck())) {
-            bindingResult.addError(new FieldError("joinRequest", "passwordCheck", "바밀번호가 일치하지 않습니다."));
+            bindingResult.addError(new FieldError("joinRequest", "passwordCheck", "비밀번호가 일치하지 않습니다."));
         }
-
         if (bindingResult.hasErrors()) {
             return "join";
         }
-
         userService.join(joinRequest);
-
         return "redirect:/security-login";
     }
 
     @GetMapping("/login")
     public String loginPage(Model model) {
-
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
-
     @GetMapping("/info")
     public String userInfo(Model model, Authentication auth) throws IllegalAccessException {
-
+        if (auth == null) {
+            return "redirect:/security-login/login";
+        }
         User loginUser = userService.getLoginUserByLoginId(auth.getName());
-
         if (loginUser == null) {
             return "redirect:/security-login/login";
         }
-
         model.addAttribute("user", loginUser);
         return "info";
     }
+
 
     @GetMapping("/admin")
     public String adminPage(Model model) {
