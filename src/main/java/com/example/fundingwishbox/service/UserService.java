@@ -2,6 +2,7 @@ package com.example.fundingwishbox.service;
 
 
 import com.example.fundingwishbox.dto.JoinRequest;
+import com.example.fundingwishbox.dto.LoginRequest;
 import com.example.fundingwishbox.dto.UserDto;
 import com.example.fundingwishbox.dto.UserRoleUpdateRequest;
 import com.example.fundingwishbox.entity.User;
@@ -23,11 +24,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
     }
@@ -37,7 +38,7 @@ public class UserService {
     }
 
     public void join(JoinRequest request) {
-        userRepository.save(User.fromDto(request,encoder));
+        userRepository.save(User.fromDto(request, encoder));
     }
 
     public User myInfo(String loginId) {
@@ -115,7 +116,6 @@ public class UserService {
             throw new IllegalAccessException("Blacklist user");
         }
 
-
         return user;
     }
 
@@ -124,12 +124,11 @@ public class UserService {
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 3;
 
-
         Page<User> userList;
         if (keyword == null || keyword.isEmpty()) {
             userList = userRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "loginId")));
         } else {
-            userList = userRepository.findByNicknameContaining(keyword, PageRequest.of(page,pageLimit,Sort.by(Sort.Direction.DESC,"loginId")));
+            userList = userRepository.findByNicknameContaining(keyword, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "loginId")));
         }
 
         Page<UserDto> userDtoList = userList.map(user -> new UserDto(user.getLoginId(), user.getNickname(), user.getRole(), user.getId()));
@@ -137,4 +136,17 @@ public class UserService {
         return userDtoList;
     }
 
+    public User login(LoginRequest request) throws Exception {
+        Optional<User> userOptional = userRepository.findByLoginId(request.getLoginId());
+        if (userOptional.isEmpty()) {
+            throw new Exception("Invalid login credentials");
+        }
+
+        User user = userOptional.get();
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new Exception("Invalid login credentials");
+        }
+
+        return user;
+    }
 }

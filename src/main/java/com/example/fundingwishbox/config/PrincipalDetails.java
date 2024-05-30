@@ -39,10 +39,10 @@ public class    PrincipalDetails implements UserDetails {
         this.user = user;
         this.attributes = attributes;
     }
+
     public String getName() {
         return null;
     }
-
 
     public Map<String, Object> getAttributes() {
         return attributes;

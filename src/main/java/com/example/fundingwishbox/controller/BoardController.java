@@ -18,14 +18,19 @@ import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
-
+@RequestMapping("/security-login/board")
 public class BoardController {
 
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("loginType", "security-login");
+        model.addAttribute("pageName", "Security 로그인");
+    }
 
     private final BoardService boardService;
 
     @GetMapping("/save")
-    public String saveForm() {
+    public String saveForm(){
         return "Board/boardSave";
     }
 
@@ -39,23 +44,23 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model,
-                           @PageableDefault(page = 1) Pageable pageable) {
+                           @PageableDefault(page = 1) Pageable pageable){
 
 
         boardService.updateHits(id);
         BoardDto boardDto = boardService.findById(id);
         model.addAttribute("board", boardDto);
-        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("page",pageable.getPageNumber());
         return "Board/boardDetail";
     }
 
 
     @GetMapping("/list/search")
-    public String listForm(Model model, @RequestParam(name = "keyword", required = false) String keyword, @PageableDefault(page = 1) Pageable pageable) {
-        Page<BoardDto> BoardDtoList = boardService.abc(keyword, pageable);
+    public String listForm(Model model, @RequestParam(name = "keyword", required = false) String keyword, @PageableDefault(page = 1) Pageable pageable){
+        Page<BoardDto> BoardDtoList = boardService.abc(keyword,pageable);
 
         int blockLimit = 3;
-        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
         int endPage = ((startPage + blockLimit - 1) < BoardDtoList.getTotalPages()) ? startPage + blockLimit - 1 : BoardDtoList.getTotalPages();
 
         model.addAttribute("dto", BoardDtoList);
@@ -64,5 +69,9 @@ public class BoardController {
         model.addAttribute("keyword", keyword);
         return "Board/boardList";
     }
-}
 
+
+
+
+
+}
