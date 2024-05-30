@@ -1,0 +1,3 @@
+[submodule "fundingwishbox-yml"]
+	path = fundingwishbox-yml
+	url = https://github.com/yh392754/fundingwishbox-yml.git
