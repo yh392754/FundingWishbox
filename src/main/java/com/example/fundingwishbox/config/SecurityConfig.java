@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -41,10 +39,6 @@ public class SecurityConfig {
                         .logoutUrl("/security-login/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                )
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/security-login/login"))
-                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 )
                 .userDetailsService(customUserDetailsService);
 
