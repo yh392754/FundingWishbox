@@ -1,5 +1,6 @@
 package com.example.fundingwishbox.service;
 
+import com.example.fundingwishbox.config.PrincipalDetails;
 import com.example.fundingwishbox.entity.User;
 import com.example.fundingwishbox.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getLoginId())
-                .password(user.getPassword())
-                .authorities(user.getRole().name())
-                .build();
+        // PrincipalDetails 객체를 생성하여 반환
+        return new PrincipalDetails(user);
     }
 }
