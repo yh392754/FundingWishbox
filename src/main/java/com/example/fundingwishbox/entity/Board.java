@@ -20,7 +20,6 @@ public class Board extends Time{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String body;
     private int hits;

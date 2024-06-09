@@ -31,7 +31,7 @@ public class UserController {
     @ModelAttribute
     public void addAttributes(Model model) {
         model.addAttribute("loginType", "security-login");
-        model.addAttribute("pageName", "Security 로그인");
+        model.addAttribute("pageName", "Funding Wish Box");
     }
 
     @GetMapping(value = {"", "/"})
@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping("/join")
     public String joinPage(Model model) {
         model.addAttribute("loginType", "security-login");
-        model.addAttribute("pageName", "Security 로그인");
+        model.addAttribute("pageName", "Funding Wish Box");
 
         model.addAttribute("joinRequest", new JoinRequest());
         return "join";
@@ -178,31 +178,6 @@ public class UserController {
         userService.updateRole(id, request);
         return "redirect:/security-login/admin/userList/search?page=" + currentPage;
     }
-
-/*
-
-    @GetMapping("/admin/userList")
-    public String userList(Model model, @PageableDefault(page = 1) Pageable pageable) {
-      //  List<UserDto> UserDtoList = userService.userList();
-
-        pageable.getPageNumber();
-        Page<UserDto> UserDtoList = userService.paging(pageable);
-
-        int blockLimit = 3;
-        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
-        int endPage = ((startPage + blockLimit - 1) < UserDtoList.getTotalPages()) ? startPage + blockLimit - 1 : UserDtoList.getTotalPages();
-
-        model.addAttribute("dto", UserDtoList);
-        model.addAttribute("startPage",startPage);
-        model.addAttribute("endPage",endPage);
-        model.addAttribute("loginType", "security-login");
-        model.addAttribute("pageName", "Security 로그인");
-        return "userList";
-    }
-
-*/
-
-
 
     @GetMapping("/boardhome")
     public String boardHome(Model model){

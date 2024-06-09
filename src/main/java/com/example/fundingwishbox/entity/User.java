@@ -31,8 +31,7 @@ public class User extends Time {
     private String provider;
     private String providerId;
 
-    // 수정 하는 거에서 builder 를 쓰면 새로운 객체를 생성하는거기 때문에 null 값이 들어갔던 것 같음.
-    //. Builder 패턴은 새로운 객체를 생성하고 초기화할 때 사용하는 것
+
     public void edit(String newPassword, String newNickname) {
         this.password = newPassword;
         this.nickname = newNickname;
