@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
+</head>
+<body>
+<button onclick="requestPay()">결제하기</button>
+
+<script>
+  function requestPay() {
+    var IMP = window.IMP;
+    IMP.init('YOUR_IMP_USER_CODE'); // 가맹점 식별코드
+
+    IMP.request_pay({
+      pg: 'kakaopay',
+      pay_method: 'card',
+      merchant_uid: 'merchant_' + new Date().getTime(),
+      name: '결제테스트',
+      amount: 1000,
+      buyer_email: 'test@example.com',
+      buyer_name: '홍길동',
+      buyer_tel: '010-1234-5678',
+      buyer_addr: '서울특별시 강남구 삼성동',
+      buyer_postcode: '123-456'
+    }, function (rsp) {
+      if (rsp.success) {
+        alert('결제가 완료되었습니다.');
+        // 서버에 결제 완료된 정보 전송
+      } else {
+        alert('결제에 실패하였습니다. 에러내용: ' + rsp.error_msg);
+      }
+    });
+  }
+</script>
+</body>
+</html>
