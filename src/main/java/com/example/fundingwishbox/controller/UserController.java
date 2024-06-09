@@ -1,6 +1,5 @@
 package com.example.fundingwishbox.controller;
 
-
 import com.example.fundingwishbox.dto.JoinRequest;
 import com.example.fundingwishbox.dto.LoginRequest;
 import com.example.fundingwishbox.dto.UserDto;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/security-login")
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +30,7 @@ public class UserController {
         model.addAttribute("pageName", "Funding Wish Box");
     }
 
-    @GetMapping(value = {"", "/"})
+    @GetMapping(value = {"", "/", "/security-login"})
     public String home(Model model, Authentication auth) throws IllegalAccessException {
 
         if (auth != null) {
@@ -53,7 +49,7 @@ public class UserController {
         return "home";
     }
 
-    @GetMapping("/join")
+    @GetMapping("/security-login/join")
     public String joinPage(Model model) {
         model.addAttribute("loginType", "security-login");
         model.addAttribute("pageName", "Funding Wish Box");
@@ -62,7 +58,7 @@ public class UserController {
         return "join";
     }
 
-    @PostMapping("/join")
+    @PostMapping("/security-login/join")
     public String join(@Valid @ModelAttribute JoinRequest joinRequest, BindingResult bindingResult, Model model) {
 
         // loginId 중복 체크
@@ -87,14 +83,14 @@ public class UserController {
         return "redirect:/security-login";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/security-login/login")
     public String loginPage(Model model) {
 
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
-    @GetMapping("/info")
+    @GetMapping("/security-login/info")
     public String userInfo(Model model, Authentication auth) throws IllegalAccessException {
 
         User loginUser = userService.getLoginUserByLoginId(auth.getName());
@@ -107,13 +103,13 @@ public class UserController {
         return "info";
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/security-login/admin")
     public String adminPage(Model model) {
 
         return "admin";
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/security-login/edit")
     public String detailForm(Model model, Authentication auth) {
         User user = userService.myInfo(auth.getName());
         model.addAttribute("userDto", UserDto.of(user));
@@ -121,9 +117,7 @@ public class UserController {
 
     }
 
-    // auth.getName() 이 session 을 사용 할때 httpsession 과 비슷한 역할을 해주는 놈
-    // 누구인지 찾아 주는 역할인데 현재 로그인 하고 있는 사용자의 정보를 가지고 오는 역할
-    @PostMapping("/edit")
+    @PostMapping("/security-login/edit")
     public String detail(@Valid @ModelAttribute UserDto dto, BindingResult bindingResult,
                          Authentication auth) {
 
@@ -135,18 +129,15 @@ public class UserController {
         }
 
         return "redirect:/security-login/info";
-
-
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/security-login/delete")
     public String delete(Authentication auth) {
         userService.delete(auth.getName());
         return "redirect:/security-login";
     }
 
-
-    @GetMapping("/admin/userList/search")
+    @GetMapping("/security-login/admin/userList/search")
     public String search(Model model, @RequestParam(name = "keyword", required = false) String keyword, @PageableDefault(page = 1) Pageable pageable) {
         Page<UserDto> UserDtoList = userService.searchAndPaging(keyword,pageable);
 
@@ -162,15 +153,13 @@ public class UserController {
         return "userList";
     }
 
-
-    @GetMapping("/delete/{id}")
+    @GetMapping("/security-login/delete/{id}")
     public String adminDelete(@PathVariable Long id, @RequestParam("currentPage") int currentPage) {
         userService.deleteById(id);
         return "redirect:/security-login/admin/userList/search?page=" + currentPage;
     }
 
-
-    @PostMapping("/{id}/update-role")
+    @PostMapping("/security-login/{id}/update-role")
     public String updateRole(@PathVariable Long id,
                              @ModelAttribute UserRoleUpdateRequest request,
                              @RequestParam("currentPage") int currentPage) {
@@ -179,7 +168,7 @@ public class UserController {
         return "redirect:/security-login/admin/userList/search?page=" + currentPage;
     }
 
-    @GetMapping("/boardhome")
+    @GetMapping("/security-login/boardhome")
     public String boardHome(Model model){
         return "Board/boardHome";
     }
