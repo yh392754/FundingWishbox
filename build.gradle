@@ -39,11 +39,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 
