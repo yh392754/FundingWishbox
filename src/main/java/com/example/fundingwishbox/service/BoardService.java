@@ -1,6 +1,5 @@
 package com.example.fundingwishbox.service;
 
-
 import com.example.fundingwishbox.dto.BoardDto;
 import com.example.fundingwishbox.entity.Board;
 import com.example.fundingwishbox.entity.BoardFile;
@@ -24,7 +23,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class BoardService {
 
     private final BoardRepository boardRepository;
@@ -37,29 +35,33 @@ public class BoardService {
 
     @Transactional
     public void save(BoardDto boardDto, User writer) throws IOException {
-
         if(boardDto.getBoardFile().isEmpty()) {
-            Board board = Board.toSaveEntity(boardDto, writer );
+            Board board = Board.toSaveEntity(boardDto, writer);
             boardRepository.save(board);
-        }
-        else{
-            Board boardEntity = Board.toSaveFileEntity(boardDto,writer);
+        } else {
+            Board boardEntity = Board.toSaveFileEntity(boardDto, writer);
             Long savedId = boardRepository.save(boardEntity).getId();
-            Board board =boardRepository.findById(savedId).get();
+            Board board = boardRepository.findById(savedId).get();
 
-            for(MultipartFile boardFile: boardDto.getBoardFile()){
-
-
-                /*MultipartFile boardFile = boardDto.getBoardFile();*/
+            for(MultipartFile boardFile: boardDto.getBoardFile()) {
                 String originalFileName = boardFile.getOriginalFilename();
-                String storedFileName = System.currentTimeMillis() +"_" + originalFileName;
-                String savePath = "C:/Users/PC/Desktop/images/" + storedFileName;
+                String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+
+                // 파일 저장 경로가 존재하는지 확인하고, 없으면 생성
+                String savePath = "C:/Users/Hoo/Desktop/images/" + storedFileName;
+                File directory = new File("C:/Users/Hoo/Desktop/images/");
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                // 경로와 파일 이름을 디버깅
+                System.out.println("Saving file to: " + savePath);
+
                 boardFile.transferTo(new File(savePath));
 
                 BoardFile boardFileEntity = BoardFile.toBoardFileEntity(board, originalFileName, storedFileName);
                 fileRepository.save(boardFileEntity);
             }
-
         }
     }
 
@@ -80,17 +82,15 @@ public class BoardService {
             Board board = optionalBoard.get();
             BoardDto boardDto = BoardDto.of(board);
             return boardDto;
-        }
-        else
+        } else {
             return null;
+        }
     }
 
     @Transactional
     public Page<BoardDto> abc(String keyword, Pageable pageable) {
-
         int page = pageable.getPageNumber() - 1;
         int pageLimit = 3;
-
 
         Page<Board> boardList;
         if (keyword == null || keyword.isEmpty()) {
@@ -100,9 +100,6 @@ public class BoardService {
         }
         Page<BoardDto> boardDtoList = boardList.map(board -> new BoardDto(board.getId(),board.getTitle(),board.getBody(),board.getUser().getNickname()));
 
-
         return boardDtoList;
     }
-
-
 }
